@@ -60,9 +60,7 @@ public class Main {
         //ServiciosBootStrap.detenetBD();
 
         String prueba = Encryptamiento("prueba");
-        System.out.println(prueba);
         prueba = Desencryptamiento(prueba);
-        System.out.println(prueba);
 
         get("/iniciarSesion", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -82,11 +80,11 @@ public class Main {
             Map<String, Object> attributes = new HashMap<>();
             List<Articulo> misArticulos = SU.listaArticulos();
 
-            if(logUser == null && request.cookie("credenciales") != null){
+            if(logUser == null && request.cookie("edrtyujhgf34567") != null){
                 request.session(true);
-                String username = request.cookie("credenciales");
+                String username = request.cookie("edrtyujhgf34567");
                 request.session().attribute("usuario",
-                        SU.buscarUsuario(Desencryptamiento(request.cookie("credenciales"))));
+                        SU.buscarUsuario(Desencryptamiento(request.cookie("edrtyujhgf34567"))));
                 response.redirect("/");
             }
 
@@ -113,7 +111,7 @@ public class Main {
                     request.session(true);
                     request.session().attribute("usuario", logUser);
                     if(isRecordado!=null){
-                        response.cookie("/", "credenciales",
+                        response.cookie("/", "edrtyujhgf34567",
                                 Encryptamiento(usernameAVerificar), (60*60*24*7), false, true);
                     }
                     response.redirect("/");
@@ -193,7 +191,7 @@ public class Main {
         {
             Session ses = request.session(true);
             ses.invalidate();
-            response.removeCookie("credenciales");
+            response.removeCookie("edrtyujhgf34567");
             response.redirect("/");
             return "";
         });
@@ -406,7 +404,7 @@ public class Main {
 
     public static String Encryptamiento(String text){
         BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
-        textEncryptor.setPasswordCharArray("some-random-data".toCharArray());
+        textEncryptor.setPasswordCharArray("kjnkuakffbkjg23425".toCharArray());
         String myEncryptedText = textEncryptor.encrypt(text);
         return myEncryptedText;
 
@@ -414,7 +412,7 @@ public class Main {
 
     public static String Desencryptamiento(String text){
         BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
-        textEncryptor.setPasswordCharArray("some-random-data".toCharArray());
+        textEncryptor.setPasswordCharArray("kjnkuakffbkjg23425".toCharArray());
         String plainText = textEncryptor.decrypt(text);
 
         return plainText;

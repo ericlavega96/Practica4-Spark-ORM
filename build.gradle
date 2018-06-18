@@ -11,6 +11,10 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    //Librerias de Hibernate
+    compile 'org.hibernate:hibernate-core:5.1.0.Final'
+    compile 'org.hibernate:hibernate-entitymanager:5.1.0.Final'
+
     compile "com.sparkjava:spark-core:2.7.2"
     compile 'com.sparkjava:spark-template-freemarker:2.7.1'
     compile "com.h2database:h2:1.4.197"

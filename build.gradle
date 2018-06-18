@@ -1,4 +1,4 @@
-group 'practica3.jdbc'
+group 'practica4.spark.orm'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'

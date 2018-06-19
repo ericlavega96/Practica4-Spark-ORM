@@ -106,14 +106,10 @@ public class Articulo {
 
     public String etiquetasString(){
         String etiquetasString = "";
-        for (int i = 0; i < listaEtiquetas.size();i++) {
-            System.out.println("Etiqueta " + listaEtiquetas.get(i));
-            etiquetasString+= listaEtiquetas.get(i);
-            if (i < listaEtiquetas.size() -1){
-                etiquetasString += ", ";
-            }
+        for (int i=0; i < listaEtiquetas.size() - 1;i++ ){
+            etiquetasString += listaEtiquetas.get(i).getEtiqueta() + ",";
         }
-
+        etiquetasString += listaEtiquetas.get(listaEtiquetas.size() - 1).getEtiqueta();
         return etiquetasString;
     }
 

@@ -49,10 +49,10 @@
 
       </style>
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="css/blog-home.css" rel="stylesheet">
+    <link href="/css/blog-home.css" rel="stylesheet">
 
   </head>
 
@@ -107,7 +107,7 @@
       <div class="row">
         <!-- Blog Entries Column -->
         <div class="col-md-8">
-            <h1 class="my-4">Publicar Artículo</h1>
+            <h1 class="my-4">Editar Artículo</h1>
         </div>
         <div class="editorContainer">
             <form method="post" action="/procesarArticulo">
@@ -116,12 +116,12 @@
                         <label><b>Título</b></label>
                     </div>
                     <div class="element">
-                        <input type="text" name="title" value=${articulo.titulo}>
+                        <input type="text" name="title" value= "${articulo.titulo}">
                     </div>
                 </div>
                 <div>
                     <div class="element">
-                        <textarea name="cuerpo"  type="text" placeholder="Escribe aquí..." style="height:200px" value=${articulo.cuerpo}></textarea>
+                        <textarea name="cuerpo"  type="text" style="height:200px">${articulo.cuerpo}</textarea>
                     </div>
                 </div>
                 <div class="element">
@@ -148,8 +148,8 @@
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   </body>
 

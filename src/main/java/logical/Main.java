@@ -60,7 +60,9 @@ public class Main {
         //ServiciosBootStrap.detenetBD();
 
         String prueba = Encryptamiento("prueba");
+        System.out.println(prueba);
         prueba = Desencryptamiento(prueba);
+        System.out.println(prueba);
 
         get("/iniciarSesion", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -80,11 +82,11 @@ public class Main {
             Map<String, Object> attributes = new HashMap<>();
             List<Articulo> misArticulos = SU.listaArticulos();
 
-            if(logUser == null && request.cookie("edrtyujhgf34567") != null){
+            if(logUser == null && request.cookie("dcfgvhb2hjrkb2j289yhuij") != null){
                 request.session(true);
-                String username = request.cookie("edrtyujhgf34567");
+                String username = request.cookie("dcfgvhb2hjrkb2j289yhuij");
                 request.session().attribute("usuario",
-                        SU.buscarUsuario(Desencryptamiento(request.cookie("edrtyujhgf34567"))));
+                        SU.buscarUsuario(Desencryptamiento(request.cookie("dcfgvhb2hjrkb2j289yhuij"))));
                 response.redirect("/");
             }
 
@@ -111,7 +113,7 @@ public class Main {
                     request.session(true);
                     request.session().attribute("usuario", logUser);
                     if(isRecordado!=null){
-                        response.cookie("/", "edrtyujhgf34567",
+                        response.cookie("/", "dcfgvhb2hjrkb2j289yhuij",
                                 Encryptamiento(usernameAVerificar), (60*60*24*7), false, true);
                     }
                     response.redirect("/");
@@ -191,7 +193,7 @@ public class Main {
         {
             Session ses = request.session(true);
             ses.invalidate();
-            response.removeCookie("edrtyujhgf34567");
+            response.removeCookie("dcfgvhb2hjrkb2j289yhuij");
             response.redirect("/");
             return "";
         });
@@ -204,32 +206,7 @@ public class Main {
             return new ModelAndView(attributes, "publicarArticulo.ftl");
         }, freeMarkerEngine);
 
-       /* post("/procesarArticulo", (request, response) -> {
-            System.out.println("Entró al post");
 
-            try {
-                String titulo = request.queryParams("title");
-                System.out.println("Entro en 1 " + titulo);
-                String cuerpo = request.queryParams("cuerpo");
-                System.out.println("Entro en 2" + cuerpo);
-                List<Comentario> articuloComentarios = new ArrayList<>();
-                String[] articuloEtiquetas = request.queryParams("etiquetas").split(",");
-                System.out.println("Entro en 3" + articuloEtiquetas);
-
-                Articulo nuevoArticulo = new Articulo(titulo,cuerpo,misUsuarios.get(0),new Date(),articuloComentarios,crearEtiquetas(articuloEtiquetas));
-                System.out.println("Se anadió el articulo");
-                articulos.add(nuevoArticulo);
-                System.out.println("Funciono!");
-
-            } catch (Exception e) {
-                System.out.println("Error al intentar publicar articulo" + e.toString());
-            }
-            response.redirect("/");
-            System.out.println("Redirecciona...");
-            return "";
-        });
-    }
-    */
         post("/procesarArticulo", (request, response) -> {
             try {
                 String titulo = request.queryParams("title");
@@ -251,9 +228,9 @@ public class Main {
         });
 
 
-        get("/leerArticuloCompleto", (request, response) -> {
+        get("/leerArticuloCompleto/:id", (request, response) -> {
 
-            String idArticuloActual = request.queryParams("idArticulo");
+            String idArticuloActual = request.params("id");
 
             Map<String, Object> attributes = new HashMap<>();
             Usuario logUser = request.session(true).attribute("usuario");
@@ -266,16 +243,16 @@ public class Main {
             return new ModelAndView(attributes, "verArticulo.ftl");
         }, freeMarkerEngine);
 
-        get("/editarArticulo", (request, response) -> {
+        get("/editarArticulo/:id", (request, response) -> {
 
-            String idArticuloEditar = request.queryParams("id");
+            String idArticuloEditar = request.params("id");
 
             Articulo articuloAEditar = SU.buscarArticulo(Long.parseLong(idArticuloEditar));
 
-            System.out.println("Id: "+ articuloAEditar.getId() + " Titulo: " + articuloAEditar.getTitulo() + " Cuerpo " + articuloAEditar.getCuerpo() + " Tags " + articuloAEditar.getListaEtiquetas());
+            System.out.println("Titulo:"+articuloAEditar.getTitulo()+" Cuerpo: "+articuloAEditar.getCuerpo());
 
             Map<String, Object> attributes = new HashMap<>();
-            attributes.put("titulo", "Editar Usuario");
+            attributes.put("titulo", "Editar Articulo");
             attributes.put("articulo", articuloAEditar);
 
             return new ModelAndView(attributes, "editarArticulo.ftl");
@@ -289,7 +266,7 @@ public class Main {
 
             SU.borrarComentario(Long.parseLong(idComentarioAEliminar));
 
-            response.redirect("/leerArticuloCompleto?idArticulo=" + idArticuloActual);
+            response.redirect("/leerArticuloCompleto/" + idArticuloActual);
             return "";
         });
 
@@ -323,16 +300,16 @@ public class Main {
             return "";
         });
 
-        post("/comentarArticulo", (request, response) -> {
+        post("/comentarArticulo/:id", (request, response) -> {
             try {
                 String comentario = request.queryParams("comentarioNuevo");
                 Usuario autor = request.session(true).attribute("usuario");
-                Articulo articuloActual = SU.buscarArticulo(Long.parseLong(request.queryParams("idArticulo")));
+                Articulo articuloActual = SU.buscarArticulo(Long.parseLong(request.params("id")));
 
                 Comentario nuevoComentario = new Comentario(comentario,autor,articuloActual);
                 SU.crearComentario(nuevoComentario);
 
-                response.redirect("/leerArticuloCompleto?idArticulo=" + articuloActual.getId());
+                response.redirect("/leerArticuloCompleto/" + articuloActual.getId());
             } catch (Exception e) {
                 System.out.println("Error al publicar comentario: " + e.toString());
             }

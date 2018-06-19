@@ -100,7 +100,7 @@
                 <div class="card-body">
               <#if logUser??>
                   <#if logUser.administrador || logUser.autor>
-                      <a href="/editarArticulo?id=${articulo.id}" class="editBtn">Editar</a>
+                      <a href="/editarArticulo/${articulo.id}" class="editBtn">Editar</a>
                       <br>
                       <br>
                   </#if>
@@ -109,7 +109,7 @@
                     <p class="card-text">
                     ${articulo.textoResumido()}
                     </p>
-                    <a href="/leerArticuloCompleto?idArticulo=${articulo.id}" class="btn btn-primary">Leer más &rarr;</a>
+                    <a href="/leerArticuloCompleto/${articulo.id}" class="btn btn-primary">Leer más &rarr;</a>
                 </div>
                 <div class="card-footer text-muted">
                     Subido en ${articulo.fechaText()} por

@@ -24,14 +24,14 @@ public class Articulo implements Serializable {
     @Column(unique = true)
     private String cuerpo;
     @NotNull
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "username")
     private Usuario autor;
     @NotNull
     private Date fecha;
     @OneToMany(mappedBy = "articulo", cascade = CascadeType.ALL)
     private List<Comentario> listaComentarios;
-    @ManyToMany() //
+    @ManyToMany //
     private List<Etiqueta> listaEtiquetas;
 
     public Articulo() {

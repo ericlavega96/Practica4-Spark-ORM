@@ -20,4 +20,6 @@ public class ServiciosEtiquetas  extends MetodosDB<Etiqueta>{
         return instancia;
     }
 
+
+
 }

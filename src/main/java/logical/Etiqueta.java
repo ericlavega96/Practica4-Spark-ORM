@@ -18,8 +18,8 @@ public class Etiqueta implements Serializable{
 
     }
 
-    @ManyToMany(mappedBy = "listaEtiquetas", fetch = FetchType.EAGER) //indicando que la carga será en linea.
-    private Set<Articulo> listaArticulo;                               //La dueña de la relación es la clase Clase
+    @ManyToMany(mappedBy = "listaEtiquetas")
+    private Set<Articulo> listaArticulo;
 
     public Etiqueta(String etiqueta) {
         this.etiqueta = etiqueta;

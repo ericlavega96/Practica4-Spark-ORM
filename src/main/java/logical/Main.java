@@ -15,6 +15,9 @@ import spark.ModelAndView;
 import spark.Session;
 import spark.template.freemarker.FreeMarkerEngine;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,22 +44,18 @@ public class Main {
 
         new FiltrosYCookies().aplicarFiltros();
 
-        Usuario user = new Usuario("aavgc", "Adonis", "1234", true, false);
-        Usuario ericUser = new Usuario("ericlavega96", "Eric", "1234", true, false);
-
-        misUsuarios.add(user);
-        misUsuarios.add(ericUser);
-
-
         //Pruebas conexion BD modo Server
-        ServiciosBootStrap.iniciarBD();
+        ServiciosBootStrap.getInstancia().init();
 
-        ServiciosDataBase.getInstancia().testConexion();
+        EntityManagerFactory factory = Persistence.createEntityManagerFactory("MiUnidadPersistencia"); //name of persistence unit here
+        EntityManager entityManager = factory.createEntityManager();
 
-        ServiciosBootStrap.crearTablas();
+        //ServiciosDataBase.getInstancia().testConexion();
+
+        //ServiciosBootStrap.crearTablas();
 
         ServiciosUsuario SU = new ServiciosUsuario();
-        SU.crearAdmin();
+        //SU.crearAdmin();
         //ServiciosBootStrap.detenetBD();
 
         get("/iniciarSesion", (request, response) -> {

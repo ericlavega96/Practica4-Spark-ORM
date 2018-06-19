@@ -10,7 +10,7 @@ public class Comentario implements Serializable{
     private String comentario;
     @ManyToOne
     private Usuario autor;
-    @OneToMany
+    @ManyToOne
     private Articulo articulo;
 
     public Comentario() {

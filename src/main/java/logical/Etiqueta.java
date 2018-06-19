@@ -1,6 +1,12 @@
 package logical;
 
-public class Etiqueta {
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Set;
+
+@Entity
+public class Etiqueta implements Serializable{
+    @Id
     private long id;
     private String etiqueta;
 

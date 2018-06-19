@@ -1,23 +1,42 @@
 package logical;
 
+import com.sun.istack.internal.NotNull;
+
+import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class Articulo {
+@Entity
+public class Articulo implements Serializable {
+    @Id
+    @GeneratedValue
     private long id;
+    @NotNull
+    @Column(unique = true)
     private String titulo;
+    @NotNull
+    @Column(unique = true)
     private String cuerpo;
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "username")
     private Usuario autor;
+    @NotNull
     private Date fecha;
+    @OneToMany(mappedBy = "articulo", cascade = CascadeType.ALL)
     private List<Comentario> listaComentarios;
+    @ManyToMany() //
     private List<Etiqueta> listaEtiquetas;
 
     public Articulo() {
         this.listaComentarios = new ArrayList<Comentario>();
         this.listaEtiquetas = new ArrayList<Etiqueta>();
-
     }
 
     public Articulo(String titulo, String cuerpo, Usuario autor, Date fecha, List<Comentario> listaComentarios, List<Etiqueta> listaEtiquetas) {

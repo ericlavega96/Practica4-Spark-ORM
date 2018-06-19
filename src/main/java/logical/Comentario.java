@@ -6,6 +6,7 @@ import java.io.Serializable;
 public class Comentario implements Serializable{
     @Id
     @GeneratedValue
+    @Column(name="COMENTARIO_ID")
     private long id;
     private String comentario;
     @ManyToOne

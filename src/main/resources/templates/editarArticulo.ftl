@@ -110,7 +110,7 @@
             <h1 class="my-4">Editar Artículo</h1>
         </div>
         <div class="editorContainer">
-            <form method="post" action="/procesarArticulo">
+            <form method="post" action="/editarArticulo/${articulo.id}">
                 <div>
                     <div class="element">
                         <label><b>Título</b></label>

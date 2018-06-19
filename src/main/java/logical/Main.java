@@ -3,24 +3,14 @@ package logical;
 
 import freemarker.template.Configuration;
 
-import org.jasypt.util.password.BasicPasswordEncryptor;
-import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
-import servicios.FiltrosYCookies;
-import servicios.ServiciosBootStrap;
-import servicios.ServiciosDataBase;
+import servicios.*;
 
-import servicios.ServiciosUsuario;
 import spark.ModelAndView;
 import spark.Session;
 import spark.template.freemarker.FreeMarkerEngine;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static spark.Spark.*;
@@ -47,16 +37,14 @@ public class Main {
         //Pruebas conexion BD modo Server
         ServiciosBootStrap.getInstancia().init();
 
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("MiUnidadPersistencia"); //name of persistence unit here
-        EntityManager entityManager = factory.createEntityManager();
+        ServiciosEtiquetas.getInstancia().crear(new Etiqueta("prueba"));
 
         //ServiciosDataBase.getInstancia().testConexion();
 
         //ServiciosBootStrap.crearTablas();
-
-        ServiciosUsuario SU = new ServiciosUsuario();
         //SU.crearAdmin();
         //ServiciosBootStrap.detenetBD();
+        ServiciosUsuarios.getInstancia().crearAdmin();
 
         get("/iniciarSesion", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
@@ -74,13 +62,13 @@ public class Main {
         get("/", (request, response) -> {
             Usuario logUser = request.session(true).attribute("usuario");
             Map<String, Object> attributes = new HashMap<>();
-            List<Articulo> misArticulos = SU.listaArticulos();
+            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findAll();
 
             if(logUser == null && request.cookie("dcfgvhb2hjrkb2j289yhuij") != null){
                 request.session(true);
                 String username = request.cookie("dcfgvhb2hjrkb2j289yhuij");
                 request.session().attribute("usuario",
-                        SU.buscarUsuario(Desencryptamiento(request.cookie("dcfgvhb2hjrkb2j289yhuij"))));
+                        ServiciosUsuarios.getInstancia().find(Desencryptamiento(request.cookie("dcfgvhb2hjrkb2j289yhuij"))));
                 response.redirect("/");
             }
 
@@ -101,7 +89,7 @@ public class Main {
                 String usernameAVerificar = request.queryParams("username");
                 String passwordsAVerificar = request.queryParams("password");
                 String isRecordado = request.queryParams("recordar");
-                Usuario logUser = SU.buscarUsuario(usernameAVerificar,passwordsAVerificar);
+                Usuario logUser = ServiciosUsuarios.getInstancia().findByUsernameAndPassword(usernameAVerificar,passwordsAVerificar);
 
                 if (logUser != null) {
                     request.session(true);
@@ -139,7 +127,7 @@ public class Main {
 
             Usuario nuevoUsuario = new Usuario(nombre, username, password, isAdmin!=null, false);
             misUsuarios.add(nuevoUsuario);
-            SU.crearUsuario(nuevoUsuario);
+            ServiciosUsuarios.getInstancia().crear(nuevoUsuario);
 
             response.redirect("/listaUsuarios");
 
@@ -151,7 +139,7 @@ public class Main {
 
         get("/listaUsuarios", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
-            List<Usuario> usuariosEncontrados = SU.listaUsuario();
+            List<Usuario> usuariosEncontrados = ServiciosUsuarios.getInstancia().findAll();
             attributes.put("titulo", "Lista de Usuarios");
             attributes.put("listaUsuarios", usuariosEncontrados);
             return new ModelAndView(attributes, "listaUsuarios.ftl");
@@ -160,7 +148,7 @@ public class Main {
         post("/salvarUsuarioEditado", (request, response) -> {
             try {
 
-                Usuario usuarioEditado = SU.buscarUsuario(usernameUsuarioActual);
+                Usuario usuarioEditado = ServiciosUsuarios.getInstancia().find(usernameUsuarioActual);
 
                 String nombre = request.queryParams("nombre");
                 String username = request.queryParams("username");
@@ -174,7 +162,7 @@ public class Main {
                 usuarioEditado.setAdministrador(false);
                 usuarioEditado.setAutor(true);
 
-                SU.actualizarUsuario(usuarioEditado);
+                ServiciosUsuarios.getInstancia().editar(usuarioEditado);
                 response.redirect("/listaUsuarios");
             } catch (Exception e) {
                 System.out.println("Error al editar al usuario: " + e.toString());
@@ -202,22 +190,22 @@ public class Main {
 
 
         post("/procesarArticulo", (request, response) -> {
-            try {
+            //try {
                 String titulo = request.queryParams("title");
                 String cuerpo = request.queryParams("cuerpo");
                 Usuario autor = request.session(true).attribute("usuario");
                 Date fecha = new Date();
-                List<Comentario> articuloComentarios = new ArrayList<>();
+                Set<Comentario> articuloComentarios = new HashSet<>();
                 String[] etiquetas = request.queryParams("etiquetas").split(",");
-                List<Etiqueta> articuloEtiquetas = crearEtiquetas(etiquetas);
+                Set<Etiqueta> articuloEtiquetas = crearEtiquetas(etiquetas);
 
                 Articulo nuevoArticulo = new Articulo(titulo,cuerpo,autor,fecha,articuloComentarios,articuloEtiquetas);
-                SU.crearArticulo(nuevoArticulo);
+                ServiciosArticulos.getInstancia().crear(nuevoArticulo);
 
                 response.redirect("/");
-            } catch (Exception e) {
-                System.out.println("Error al publicar artículo: " + e.toString());
-            }
+            //} catch (Exception e) {
+                //System.out.println("Error al publicar artículo: " + e.toString());
+            //}
             return "";
         });
 
@@ -230,10 +218,10 @@ public class Main {
             Usuario logUser = request.session(true).attribute("usuario");
             attributes.put("titulo", "Artículo");
             attributes.put("logUser", logUser);
-            attributes.put("articulo",SU.buscarArticulo(Long.parseLong(idArticuloActual)));
+            attributes.put("articulo",ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual)));
 
-            attributes.put("tagsCol1", tagsColumnas(2, 1,getTagsArticulo(SU.buscarArticulo(Long.parseLong(idArticuloActual)))));
-            attributes.put("tagsCol2", tagsColumnas(2, 2, getTagsArticulo(SU.buscarArticulo(Long.parseLong(idArticuloActual)))));
+            attributes.put("tagsCol1", tagsColumnas(2, 1,getTagsArticulo(ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual)))));
+            attributes.put("tagsCol2", tagsColumnas(2, 2, getTagsArticulo(ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual)))));
             return new ModelAndView(attributes, "verArticulo.ftl");
         }, freeMarkerEngine);
 
@@ -241,7 +229,7 @@ public class Main {
 
             String idArticuloEditar = request.params("id");
 
-            Articulo articuloAEditar = SU.buscarArticulo(Long.parseLong(idArticuloEditar));
+            Articulo articuloAEditar = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloEditar));
 
             System.out.println("Titulo:"+articuloAEditar.getTitulo()+" Cuerpo: "+articuloAEditar.getCuerpo());
 
@@ -258,7 +246,7 @@ public class Main {
             String idComentarioAEliminar = request.queryParams("idComentario");
             System.out.println("Id Articulo "+ idArticuloActual + " idComentario " + idComentarioAEliminar);
 
-            SU.borrarComentario(Long.parseLong(idComentarioAEliminar));
+            ServiciosComentarios.getInstancia().eliminar(Long.parseLong(idComentarioAEliminar));
 
             response.redirect("/leerArticuloCompleto/" + idArticuloActual);
             return "";
@@ -268,7 +256,7 @@ public class Main {
             Map<String, Object> attributes = new HashMap<>();
             String usernameUsuario = request.queryParams("id");
             attributes.put("titulo", "Visualizar Usuario");
-            attributes.put("usuario", SU.buscarUsuario(usernameUsuario));
+            attributes.put("usuario", ServiciosUsuarios.getInstancia().find(usernameUsuario));
             return new ModelAndView(attributes, "visualizarUsuario.ftl");
         }, freeMarkerEngine);
 
@@ -276,7 +264,7 @@ public class Main {
 
             usernameUsuarioActual = request.queryParams("id");
 
-            Usuario usuario = SU.buscarUsuario(usernameUsuarioActual);
+            Usuario usuario = ServiciosUsuarios.getInstancia().find(usernameUsuarioActual);
 
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Editar Usuario");
@@ -288,7 +276,7 @@ public class Main {
         get("/eliminarUsuario", (request, response) -> {
 
             usernameUsuarioActual = request.queryParams("id");
-            SU.borrarUsuario(usernameUsuarioActual);
+            ServiciosUsuarios.getInstancia().eliminar(usernameUsuarioActual);
 
             response.redirect("/listaUsuarios");
             return "";
@@ -298,10 +286,10 @@ public class Main {
             try {
                 String comentario = request.queryParams("comentarioNuevo");
                 Usuario autor = request.session(true).attribute("usuario");
-                Articulo articuloActual = SU.buscarArticulo(Long.parseLong(request.params("id")));
+                Articulo articuloActual = ServiciosArticulos.getInstancia().find(Long.parseLong(request.params("id")));
 
                 Comentario nuevoComentario = new Comentario(comentario,autor,articuloActual);
-                SU.crearComentario(nuevoComentario);
+                ServiciosComentarios.getInstancia().crear(nuevoComentario);
 
                 response.redirect("/leerArticuloCompleto/" + articuloActual.getId());
             } catch (Exception e) {
@@ -363,13 +351,14 @@ public class Main {
         return tags;
     }
 
-    public static List<Etiqueta> crearEtiquetas(String[] etiquetas){
+    public static Set<Etiqueta> crearEtiquetas(String[] etiquetas){
         int i = 0;
-        List<Etiqueta> etiquetasList = new ArrayList<>();
+        Set<Etiqueta> etiquetasList = new HashSet<>();
         for (String etiqueta : etiquetas ){
             etiquetasList.add(new Etiqueta(etiqueta.trim()));
             i++;
         }
+        System.out.println("Etiquetas: " + etiquetasList);
         return etiquetasList;
     }
 

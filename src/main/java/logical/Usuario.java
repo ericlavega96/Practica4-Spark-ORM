@@ -2,16 +2,15 @@ package logical;
 
 import com.sun.istack.internal.NotNull;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Usuario implements Serializable{
     @Id
+    @Column(name="USUARIO_ID")
     private String username;
     @NotNull
     private String nombre;
@@ -23,10 +22,12 @@ public class Usuario implements Serializable{
     private boolean autor;
 
     @OneToMany(mappedBy = "autor")
-    private List<Comentario> comentarios;
+    private Set<Comentario> comentarios;
+
+    @OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL)
+    Set<LikesArticulo> likeArticulo = new HashSet<>();
 
     public Usuario() {
-        this.comentarios = new ArrayList<Comentario>();
     }
 
     public Usuario(String username, String nombre, String password, boolean administrador, boolean autor) {
@@ -35,7 +36,6 @@ public class Usuario implements Serializable{
         this.password = password;
         this.administrador = administrador;
         this.autor = autor;
-        this.comentarios = new ArrayList<Comentario>();
     }
 
     public String getUsername() {
@@ -78,11 +78,19 @@ public class Usuario implements Serializable{
         this.autor = autor;
     }
 
-    public List<Comentario> getComentarios() {
+    public Set<Comentario> getComentarios() {
         return comentarios;
     }
 
-    public void setComentarios(List<Comentario> comentarios) {
+    public void setComentarios(Set<Comentario> comentarios) {
         this.comentarios = comentarios;
+    }
+
+    public Set<LikesArticulo> getLikeArticulo() {
+        return likeArticulo;
+    }
+
+    public void setLikeArticulo(Set<LikesArticulo> likeArticulo) {
+        this.likeArticulo = likeArticulo;
     }
 }

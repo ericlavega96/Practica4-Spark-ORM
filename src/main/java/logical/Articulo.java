@@ -7,15 +7,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class Articulo implements Serializable {
     @Id
     @GeneratedValue
+    @Column(name="ARTICULO_ID")
     private long id;
     @NotNull
     @Column(unique = true)
@@ -25,21 +23,21 @@ public class Articulo implements Serializable {
     private String cuerpo;
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "AUTOR_ID")
     private Usuario autor;
     @NotNull
     private Date fecha;
     @OneToMany(mappedBy = "articulo", cascade = CascadeType.ALL)
-    private List<Comentario> listaComentarios;
-    @ManyToMany //
-    private List<Etiqueta> listaEtiquetas;
+    private Set<Comentario> listaComentarios;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) //
+    private Set<Etiqueta> listaEtiquetas;
+    @OneToMany(mappedBy = "articulo", cascade = CascadeType.ALL)
+    Set<LikesArticulo> likeArticulo = new HashSet<>();
 
     public Articulo() {
-        this.listaComentarios = new ArrayList<Comentario>();
-        this.listaEtiquetas = new ArrayList<Etiqueta>();
     }
 
-    public Articulo(String titulo, String cuerpo, Usuario autor, Date fecha, List<Comentario> listaComentarios, List<Etiqueta> listaEtiquetas) {
+    public Articulo(String titulo, String cuerpo, Usuario autor, Date fecha, Set<Comentario> listaComentarios, Set<Etiqueta> listaEtiquetas) {
         this.titulo = titulo;
         this.cuerpo = cuerpo;
         this.autor = autor;
@@ -88,19 +86,19 @@ public class Articulo implements Serializable {
         this.fecha = fecha;
     }
 
-    public List<Comentario> getListaComentarios() {
+    public Set<Comentario> getListaComentarios() {
         return listaComentarios;
     }
 
-    public void setListaComentarios(List<Comentario> listaComentarios) {
+    public void setListaComentarios(Set<Comentario> listaComentarios) {
         this.listaComentarios = listaComentarios;
     }
 
-    public List<Etiqueta> getListaEtiquetas() {
+    public Set<Etiqueta> getListaEtiquetas() {
         return listaEtiquetas;
     }
 
-    public void setListaEtiquetas(List<Etiqueta> listaEtiquetas) {
+    public void setListaEtiquetas(Set<Etiqueta> listaEtiquetas) {
         this.listaEtiquetas = listaEtiquetas;
     }
 
@@ -125,10 +123,11 @@ public class Articulo implements Serializable {
 
     public String etiquetasString(){
         String etiquetasString = "";
-        for (int i=0; i < listaEtiquetas.size() - 1;i++ ){
-            etiquetasString += listaEtiquetas.get(i).getEtiqueta() + ",";
+        List<Etiqueta> list = new ArrayList<>(listaEtiquetas);
+        for (int i=0; i < list.size() - 1;i++ ){
+            etiquetasString += list.get(i).getEtiqueta() + ",";
         }
-        etiquetasString += listaEtiquetas.get(listaEtiquetas.size() - 1).getEtiqueta();
+        etiquetasString += list.get(listaEtiquetas.size() - 1).getEtiqueta();
         return etiquetasString;
     }
 

@@ -9,6 +9,8 @@ import java.util.Set;
 @Entity
 public class Etiqueta implements Serializable{
     @Id
+    @GeneratedValue
+    @Column(name="ETIQUETA_ID")
     private long id;
     @NotNull
     @Column(unique = true)

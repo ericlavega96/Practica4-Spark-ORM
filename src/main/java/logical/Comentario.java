@@ -1,13 +1,20 @@
 package logical;
+import javax.persistence.*;
+import java.io.Serializable;
 
-public class Comentario {
-
+@Entity
+public class Comentario implements Serializable{
+    @Id
+    @GeneratedValue
     private long id;
     private String comentario;
+    @ManyToOne
     private Usuario autor;
+    @OneToMany
     private Articulo articulo;
 
     public Comentario() {
+
     }
 
     public Comentario(String comentario, Usuario autor, Articulo articulo) {

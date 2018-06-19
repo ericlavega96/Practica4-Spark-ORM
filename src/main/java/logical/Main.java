@@ -59,11 +59,6 @@ public class Main {
         SU.crearAdmin();
         //ServiciosBootStrap.detenetBD();
 
-        String prueba = Encryptamiento("prueba");
-        System.out.println(prueba);
-        prueba = Desencryptamiento(prueba);
-        System.out.println(prueba);
-
         get("/iniciarSesion", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
 

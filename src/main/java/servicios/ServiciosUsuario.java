@@ -99,7 +99,6 @@ public class ServiciosUsuario {
                 Etiqueta o = new Etiqueta();
                 o.setId(rs.getLong("codigo"));
                 o.setEtiqueta(rs.getString("tag"));
-                System.out.println("Codigo " + o.getId() + " Etiqueta "+ o.getEtiqueta());
 
                 lista.add(o);
             }

@@ -1,5 +1,7 @@
 package logical;
 
+import com.sun.istack.internal.NotNull;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -8,11 +10,16 @@ import java.util.Set;
 public class Etiqueta implements Serializable{
     @Id
     private long id;
+    @NotNull
+    @Column(unique = true)
     private String etiqueta;
 
     public Etiqueta() {
 
     }
+
+    @ManyToMany(mappedBy = "listaEtiquetas", fetch = FetchType.EAGER) //indicando que la carga será en linea.
+    private Set<Articulo> listaArticulo;                               //La dueña de la relación es la clase Clase
 
     public Etiqueta(String etiqueta) {
         this.etiqueta = etiqueta;

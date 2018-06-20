@@ -37,7 +37,7 @@ public class Main {
         //Pruebas conexion BD modo Server
         ServiciosBootStrap.getInstancia().init();
 
-        System.out.println(ServiciosArticulos.getInstancia().findByTag("moda"));
+        //System.out.println(ServiciosArticulos.getInstancia().findByTag("moda"));
 
         //ServiciosDataBase.getInstancia().testConexion();
 

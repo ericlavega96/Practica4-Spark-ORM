@@ -29,7 +29,8 @@ public class Articulo implements Serializable {
     private Date fecha;
     @OneToMany(mappedBy = "articulo", cascade = CascadeType.ALL)
     private Set<Comentario> listaComentarios;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) //
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+
     private Set<Etiqueta> listaEtiquetas;
     @OneToMany(mappedBy = "articulo", cascade = CascadeType.ALL)
     Set<LikesArticulo> likeArticulo = new HashSet<>();

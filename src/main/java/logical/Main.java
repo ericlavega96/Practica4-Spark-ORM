@@ -37,7 +37,7 @@ public class Main {
         //Pruebas conexion BD modo Server
         ServiciosBootStrap.getInstancia().init();
 
-        ServiciosEtiquetas.getInstancia().crear(new Etiqueta("prueba"));
+        System.out.println(ServiciosArticulos.getInstancia().findByTag("moda"));
 
         //ServiciosDataBase.getInstancia().testConexion();
 
@@ -62,7 +62,7 @@ public class Main {
         get("/", (request, response) -> {
             Usuario logUser = request.session(true).attribute("usuario");
             Map<String, Object> attributes = new HashMap<>();
-            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findAll();
+            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findAllIndexado(1);
 
             if(logUser == null && request.cookie("dcfgvhb2hjrkb2j289yhuij") != null){
                 request.session(true);

@@ -26,13 +26,21 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
      * @param nombre
      * @return
      */
-    /*public List<Articulo> findAllByNombre(String nombre){
+    public List<Articulo> findAllIndexado(int i){
         EntityManager em = getEntityManager();
-        Query query = em.createQuery("select e from Articulo e where e.nombre like :nombre");
-        query.setParameter("nombre", nombre+"%");
+        Query query = em.createQuery("select e from Articulo e order by e.FECHA DESC LIMIT 5 OFFSET :inicio");
+        query.setParameter("inicio", i-1);
         List<Articulo> lista = query.getResultList();
         return lista;
-    }*/
+    }
+
+    public List<Articulo> findByTag(String tag){
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("select a from Articulo a, Articulo_Etiqueta ae, Etiqueta e where ae.LISTAARTICULO_ARTICULO_ID = a.id AND ae.LISTAETIQUETAS_ETIQUETA_ID = e.id AND e.etiqueta = :tag order by a.FECHA DESC");
+        query.setParameter("tag", tag);
+        List<Articulo> lista = query.getResultList();
+        return lista;
+    }
 
 
 }

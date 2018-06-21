@@ -27,10 +27,10 @@ public class Articulo implements Serializable {
     private Usuario autor;
     @NotNull
     private Date fecha;
-    @OneToMany(mappedBy = "articulo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "articulo",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Comentario> listaComentarios;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-
+    @JoinTable(name = "ARTICULO_ETIQUETA", joinColumns = { @JoinColumn(name = "ARTICULO_ID") }, inverseJoinColumns = { @JoinColumn(name = "ETIQUETA_ID") })
     private Set<Etiqueta> listaEtiquetas;
     @OneToMany(mappedBy = "articulo", cascade = CascadeType.ALL)
     Set<LikesArticulo> likeArticulo = new HashSet<>();

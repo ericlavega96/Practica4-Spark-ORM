@@ -1,6 +1,7 @@
 package servicios;
 
 import logical.Articulo;
+import logical.Etiqueta;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -37,13 +38,8 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
 
     public List<Articulo> findByTag(String tag){
         EntityManager em = getEntityManager();
-        Query query = em.createQuery("select a from Articulo a");
-
-        //SELECT t.tokenName FROM Role r JOIN r.tkns t WHERE r.roleId = :roleId
-
-        //select a from Articulo a, Articulo_Etiqueta ae, Etiqueta e where ae.LISTAARTICULO_ARTICULO_ID = a.id AND ae.LISTAETIQUETAS_ETIQUETA_ID = e.id AND e.etiqueta = :tag order by a.FECHA DESC
-
-        //query.setParameter("tag", tag);
+        Query query = em.createQuery("select a from Articulo a JOIN a.listaEtiquetas e WHERE e.etiqueta = :tag");
+        query.setParameter("tag", tag);
         List<Articulo> lista = query.getResultList();
         return lista;
     }

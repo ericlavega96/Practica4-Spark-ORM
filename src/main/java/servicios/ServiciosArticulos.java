@@ -75,5 +75,12 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         return query.getResultList().size() < 0;
     }
 
+    public int countByTag(String tag){
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("select a from Articulo a JOIN a.listaEtiquetas e WHERE e.etiqueta = :tag order by a.fecha DESC");
+        query.setParameter("tag", tag);
+        return query.getResultList().size();
+    }
+
 
 }

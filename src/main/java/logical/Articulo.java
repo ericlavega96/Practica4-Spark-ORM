@@ -166,7 +166,7 @@ public class Articulo implements Serializable {
         return nombreMes;
     }
 
-    public long likesCount(){return ServiciosArticulos.getInstancia().getLikesCount(id);}
+    public long likesCount(){return ServiciosArticulos.getInstancia().getLikesCount(this);}
 
-    public long dislikesCount(){return ServiciosArticulos.getInstancia().getDislikesCount(id);}
+    public long dislikesCount(){return ServiciosArticulos.getInstancia().getDislikesCount(this);}
 }

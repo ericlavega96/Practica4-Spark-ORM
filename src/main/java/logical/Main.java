@@ -18,9 +18,9 @@ import static spark.Spark.*;
 
 public class Main {
 
-    private static List<Usuario> misUsuarios = new ArrayList<>();
 
     private static String usernameUsuarioActual;
+    private static String idArticuloActual;
 
 
     public static void main(String[] args) throws SQLException {
@@ -117,23 +117,21 @@ public class Main {
         }, freeMarkerEngine);
 
         post("/registrarNuevoUsuario", (request, response) -> {
-            // try {
-            String nombre = request.queryParams("nombre");
-            String username = request.queryParams("username");
-            String password = request.queryParams("password");
-            String isAdmin = request.queryParams("isAdmin");
-            String isAutor = request.queryParams("isAutor");
+            try {
+                String nombre = request.queryParams("nombre");
+                String username = request.queryParams("username");
+                String password = request.queryParams("password");
+                String isAdmin = request.queryParams("rbAdmin");
+                String isAutor = request.queryParams("rbAutor");
 
+                Usuario nuevoUsuario = new Usuario(nombre, username, password, isAdmin!=null, isAutor!=null);
+                ServiciosUsuarios.getInstancia().crear(nuevoUsuario);
 
-            Usuario nuevoUsuario = new Usuario(nombre, username, password, isAdmin!=null, false);
-            misUsuarios.add(nuevoUsuario);
-            ServiciosUsuarios.getInstancia().crear(nuevoUsuario);
+                response.redirect("/listaUsuarios");
 
-            response.redirect("/listaUsuarios");
-
-            //} catch (Exception e) {
-            //    System.out.println("Error al registrar un usuario " + e.toString());
-            //}
+            } catch (Exception e) {
+                System.out.println("Error al registrar un usuario " + e.toString());
+            }
             return "";
         });
 
@@ -153,14 +151,16 @@ public class Main {
                 String nombre = request.queryParams("nombre");
                 String username = request.queryParams("username");
                 String password = request.queryParams("password");
+                String isAdmin = request.queryParams("rbAdmin");
+                String isAutor = request.queryParams("rbAutor");
 
                 //Faltan los permisos
 
                 usuarioEditado.setNombre(nombre);
                 usuarioEditado.setUsername(username);
                 usuarioEditado.setPassword(password);
-                usuarioEditado.setAdministrador(false);
-                usuarioEditado.setAutor(true);
+                usuarioEditado.setAdministrador(isAdmin!=null);
+                usuarioEditado.setAutor(isAutor!=null);
 
                 ServiciosUsuarios.getInstancia().editar(usuarioEditado);
                 response.redirect("/listaUsuarios");
@@ -190,12 +190,13 @@ public class Main {
 
 
         post("/procesarArticulo", (request, response) -> {
-            //try {
+            try {
                 String titulo = request.queryParams("title");
                 String cuerpo = request.queryParams("cuerpo");
                 Usuario autor = request.session(true).attribute("usuario");
                 Date fecha = new Date();
                 Set<Comentario> articuloComentarios = new HashSet<>();
+                String tags = request.queryParams("etiquetas");
                 String[] etiquetas = request.queryParams("etiquetas").split(",");
                 Set<Etiqueta> articuloEtiquetas = crearEtiquetas(etiquetas);
 
@@ -203,8 +204,35 @@ public class Main {
                 ServiciosArticulos.getInstancia().crear(nuevoArticulo);
 
                 response.redirect("/");
-            //} catch (Exception e) {
+            } catch (Exception e) {
                 //System.out.println("Error al publicar artículo: " + e.toString());
+            }
+            return "";
+        });
+
+        post("/salvarArticuloEditado", (request, response) -> {
+            //try {
+
+                Articulo articuloEditado = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual));
+
+                String titulo = request.queryParams("title");
+                String cuerpo = request.queryParams("cuerpo");
+                Usuario autor = request.session(true).attribute("usuario");
+                Date fecha = new Date();
+                String[] etiquetas = request.queryParams("etiquetas").split(",");
+                Set<Etiqueta> articuloEtiquetas = crearEtiquetas(etiquetas);
+
+                articuloEditado.setTitulo(titulo);
+                articuloEditado.setCuerpo(cuerpo);
+                articuloEditado.setAutor(autor);
+                articuloEditado.setFecha(fecha);
+                articuloEditado.setListaEtiquetas(articuloEtiquetas);
+
+                ServiciosArticulos.getInstancia().editar(articuloEditado);
+
+                response.redirect("/");
+            //} catch (Exception e) {
+                //System.out.println("Error al editar el artículo: " + e.toString());
             //}
             return "";
         });
@@ -227,9 +255,9 @@ public class Main {
 
         get("/editarArticulo/:id", (request, response) -> {
 
-            String idArticuloEditar = request.params("id");
+            idArticuloActual = request.params("id");
 
-            Articulo articuloAEditar = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloEditar));
+            Articulo articuloAEditar = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual));
 
             System.out.println("Titulo:"+articuloAEditar.getTitulo()+" Cuerpo: "+articuloAEditar.getCuerpo());
 
@@ -352,13 +380,18 @@ public class Main {
     }
 
     public static Set<Etiqueta> crearEtiquetas(String[] etiquetas){
-        int i = 0;
         Set<Etiqueta> etiquetasList = new HashSet<>();
+        Etiqueta tag;
+        System.out.println("Entro");
+        System.out.println("En la funcion " + etiquetas);
         for (String etiqueta : etiquetas ){
-            etiquetasList.add(new Etiqueta(etiqueta.trim()));
-            i++;
+            tag = ServiciosEtiquetas.getInstancia().findEtiquetaByTag(etiqueta.trim());
+            System.out.println(tag);
+            if(tag != null)
+                etiquetasList.add(new Etiqueta(etiqueta.trim()));
+            else
+                etiquetasList.add(tag);
         }
-        System.out.println("Etiquetas: " + etiquetasList);
         return etiquetasList;
     }
 

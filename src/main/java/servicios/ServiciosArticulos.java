@@ -32,10 +32,12 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         return lista;
     }
 
-    public List<Articulo> findByTag(String tag){
+    public List<Articulo> findByTag(String tag, int i){
         EntityManager em = getEntityManager();
-        Query query = em.createQuery("select a from Articulo a JOIN a.listaEtiquetas e WHERE e.etiqueta = :tag");
+        Query query = em.createQuery("select a from Articulo a JOIN a.listaEtiquetas e WHERE e.etiqueta = :tag order by a.fecha DESC");
         query.setParameter("tag", tag);
+        query.setFirstResult(5*(i-1));
+        query.setMaxResults(5);
         List<Articulo> lista = query.getResultList();
         return lista;
     }

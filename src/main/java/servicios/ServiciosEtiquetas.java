@@ -2,6 +2,7 @@ package servicios;
 
 
 import logical.Etiqueta;
+import logical.Usuario;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -20,6 +21,13 @@ public class ServiciosEtiquetas  extends MetodosDB<Etiqueta>{
         return instancia;
     }
 
+    public Etiqueta findByEtiquetabyTag(String tag){
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("select e from Etiqueta e where e.etiqueta = :tag");
+        query.setParameter("tag", tag);
+        Etiqueta resultado = (Etiqueta)query.getSingleResult();
+        return resultado;
+    }
 
 
 }

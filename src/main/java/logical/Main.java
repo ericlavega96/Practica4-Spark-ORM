@@ -61,11 +61,6 @@ public class Main {
 
         get("/", (request, response) -> {
             Usuario logUser = request.session(true).attribute("usuario");
-            Map<String, Object> attributes = new HashMap<>();
-            int pagina= 1;
-            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findAllIndexado(pagina);
-            List<String> tags = getTags(ServiciosEtiquetas.getInstancia().findAll());
-
             if(logUser == null && request.cookie("dcfgvhb2hjrkb2j289yhuij") != null){
                 request.session(true);
                 String username = request.cookie("dcfgvhb2hjrkb2j289yhuij");
@@ -73,12 +68,36 @@ public class Main {
                         ServiciosUsuarios.getInstancia().find(Desencryptamiento(request.cookie("dcfgvhb2hjrkb2j289yhuij"))));
                 response.redirect("/");
             }
+            response.redirect("/home?page=1");
+            return "";
+        });
+
+        get("/home", (request, response) -> {
+            Usuario logUser = request.session(true).attribute("usuario");
+            Map<String, Object> attributes = new HashMap<>();
+            int pagina = Integer.parseInt(request.queryParams("page"));
+            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findAllIndexado(pagina);
+            List<String> tags = getTags(ServiciosEtiquetas.getInstancia().findAll());
+            double maxPage = Math.ceil((double)ServiciosArticulos.getInstancia().findAll().size()/5);
+
             attributes.put("titulo", "Página de artículos A&E");
             attributes.put("logUser", logUser);
             attributes.put("tagsCol1", tagsColumnas(2, 1, tags));
             attributes.put("tagsCol2", tagsColumnas(2, 2, tags));
             attributes.put("articulos", misArticulos);
-            attributes.put("page", 1);
+            attributes.put("page", pagina);
+            if(pagina <= 1)
+                attributes.put("validP", null);
+            else
+                attributes.put("validP", "true");
+            if(pagina >= maxPage)
+                attributes.put("validN", null);
+            else
+                attributes.put("validN", "true");
+
+            attributes.put("prevPage", (pagina - 1));
+            attributes.put("nextPage", (pagina + 1));
+
             return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
 
@@ -327,14 +346,16 @@ public class Main {
             return "";
         });
 
-        get("/busquetaPorTag", (request, response) -> {
+        get("/busquedaPorTag", (request, response) -> {
             Usuario logUser = request.session(true).attribute("usuario");
             Map<String, Object> attributes = new HashMap<>();
-            int pagina= 1;
+            int pagina = Integer.parseInt(request.queryParams("page"));
             String tag = request.queryParams("tag");;
 
             List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findByTag(tag,pagina);
             List<String> tags = getTags(ServiciosEtiquetas.getInstancia().findAll());
+
+            double maxPage = Math.ceil((double)ServiciosArticulos.getInstancia().countByTag(tag)/5);
 
             attributes.put("titulo", "Página de artículos A&E");
             attributes.put("logUser", logUser);
@@ -342,7 +363,17 @@ public class Main {
             attributes.put("tagsCol1", tagsColumnas(2, 1, tags));
             attributes.put("tagsCol2", tagsColumnas(2, 2, tags));
             attributes.put("articulos", misArticulos);
-            attributes.put("page", 1);
+            if(pagina <= 1)
+                attributes.put("validP", null);
+            else
+                attributes.put("validP", "true");
+            if(pagina >= maxPage)
+                attributes.put("validN", null);
+            else
+                attributes.put("validN", "true");
+
+            attributes.put("prevPage", (pagina - 1));
+            attributes.put("nextPage", (pagina + 1));
             return new ModelAndView(attributes, "ArticulosTags.ftl");
         }, freeMarkerEngine);
 

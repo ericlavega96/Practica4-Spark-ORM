@@ -59,6 +59,14 @@
         .dislike-btn:focus .fa-thumbs-down{
             color: red;
         }
+		.likes-dislikes-container {
+			display:inline;
+		}
+		li{
+			display: inline-block;
+		}
+
+
     </style>
 
   </head>
@@ -142,15 +150,21 @@
 
           <hr>
             <div class="likes-dislikes-container">
-                <a href="#" class="like-btn">
-                    <i class="fa fa-thumbs-up"></i>
-                </a>
-                <p>Likes</p>
-                <a href="#" class="dislike-btn">
-                    <p></p>
-                    <i class="fa fa-thumbs-down"></i>
-                </a>
-                <p>Dislikes</p>
+				<ul>
+					<li>
+						<a href="#" class="like-btn">
+							<i class="fa fa-thumbs-up"></i>
+						</a>
+						<span>Likes</span>
+					</li>
+					<li>
+						<a href="#" class="dislike-btn">
+							<p></p>
+							<i class="fa fa-thumbs-down"></i>
+						</a>
+						<span>Dislikes</span>
+					</li>
+				</ul>
             </div>
 
           <!-- Comments Form -->

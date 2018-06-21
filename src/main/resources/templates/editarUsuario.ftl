@@ -36,7 +36,7 @@
               padding: 5px 5px;
               margin: 10px 0;
           }
-          input[type=radio]{
+          input[type=checkbox]{
               margin:auto;
               margin-right: 40px;
               margin-top: 20px;
@@ -96,24 +96,24 @@
                         Permisos<br>
                     <#if usuario.administrador>
                         <label>Administrador
-                            <input type="radio" name="permisos" checked>
+                            <input type="checkbox" name="rbAdmin" checked>
                         </label>
                         <label>Autor
-                            <input type="radio" name="permisos">
+                            <input type="checkbox" name="rbAutor">
                         </label>
                     <#elseif usuario.autor>
                         <label>Administrador
-                            <input type="radio" name="permisos">
+                            <input type="checkbox" name="rbAdmin">
                         </label>
                         <label>Autor
-                            <input type="radio" name="permisos" checked>
+                            <input type="checkbox" name="rbAutor" checked>
                         </label>
                     <#else>
                         <label>Administrador
-                            <input type="radio" name="permisos">
+                            <input type="checkbox" name="rbAdmin">
                         </label>
                         <label>Autor
-                            <input type="radio" name="permisos">
+                            <input type="checkbox" name="rbAutor">
                         </label>
                     </#if>
                     </div>
@@ -135,7 +135,13 @@
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    <script>
+        $(document).ready(function(){
+            $('input:checkbox').click(function() {
+                $('input:checkbox').not(this).prop('checked', false);
+            });
+        });
+    </script>
   </body>
 
 </html>

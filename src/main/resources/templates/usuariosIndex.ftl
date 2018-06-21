@@ -29,7 +29,7 @@
               padding: 5px 5px;
               margin: 10px 0;
           }
-          input[type=radio]{
+          input[type=checkbox]{
               margin:auto;
               margin-right: 40px;
               margin-top: 20px;
@@ -88,10 +88,10 @@
                 <div class="radioButton">
                     Permisos<br>
                     <label>Administrador
-                        <input type="radio" name="permisos">
+                        <input type="checkbox" name="rbAdmin">
                     </label>
                     <label>Autor
-                        <input type="radio" name="permisos">
+                        <input type="checkbox" name="rbAutor">
                     </label>
                 </div>
                 <br>
@@ -112,7 +112,12 @@
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    <script>
+        $(document).ready(function(){
+            $('input:checkbox').click(function() {
+                $('input:checkbox').not(this).prop('checked', false);
+            });
+        });
+    </script>
   </body>
-
 </html>

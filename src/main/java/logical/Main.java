@@ -37,7 +37,7 @@ public class Main {
         //Pruebas conexion BD modo Server
         ServiciosBootStrap.getInstancia().init();
 
-        System.out.println(ServiciosArticulos.getInstancia().findByTag("moda"));
+    //    System.out.println(ServiciosArticulos.getInstancia().findByTag("moda"));
 
         //ServiciosDataBase.getInstancia().testConexion();
 
@@ -62,7 +62,7 @@ public class Main {
         get("/", (request, response) -> {
             Usuario logUser = request.session(true).attribute("usuario");
             Map<String, Object> attributes = new HashMap<>();
-            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findAllIndexado(1);
+            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findAll();
 
             if(logUser == null && request.cookie("dcfgvhb2hjrkb2j289yhuij") != null){
                 request.session(true);
@@ -71,9 +71,6 @@ public class Main {
                         ServiciosUsuarios.getInstancia().find(Desencryptamiento(request.cookie("dcfgvhb2hjrkb2j289yhuij"))));
                 response.redirect("/");
             }
-
-
-
 
             attributes.put("titulo", "Página de artículos A&E");
             attributes.put("logUser", logUser);
@@ -117,23 +114,21 @@ public class Main {
         }, freeMarkerEngine);
 
         post("/registrarNuevoUsuario", (request, response) -> {
-            // try {
-            String nombre = request.queryParams("nombre");
-            String username = request.queryParams("username");
-            String password = request.queryParams("password");
-            String isAdmin = request.queryParams("isAdmin");
-            String isAutor = request.queryParams("isAutor");
+            try {
+                String nombre = request.queryParams("nombre");
+                String username = request.queryParams("username");
+                String password = request.queryParams("password");
+                String isAdmin = request.queryParams("rbAdmin");
+                String isAutor = request.queryParams("rbAutor");
 
+                Usuario nuevoUsuario = new Usuario(nombre, username, password, isAdmin!=null, isAutor!=null);
+                ServiciosUsuarios.getInstancia().crear(nuevoUsuario);
 
-            Usuario nuevoUsuario = new Usuario(nombre, username, password, isAdmin!=null, false);
-            misUsuarios.add(nuevoUsuario);
-            ServiciosUsuarios.getInstancia().crear(nuevoUsuario);
+                response.redirect("/listaUsuarios");
 
-            response.redirect("/listaUsuarios");
-
-            //} catch (Exception e) {
-            //    System.out.println("Error al registrar un usuario " + e.toString());
-            //}
+            } catch (Exception e) {
+                System.out.println("Error al registrar un usuario " + e.toString());
+            }
             return "";
         });
 
@@ -153,14 +148,16 @@ public class Main {
                 String nombre = request.queryParams("nombre");
                 String username = request.queryParams("username");
                 String password = request.queryParams("password");
+                String isAdmin = request.queryParams("rbAdmin");
+                String isAutor = request.queryParams("rbAutor");
 
                 //Faltan los permisos
 
                 usuarioEditado.setNombre(nombre);
                 usuarioEditado.setUsername(username);
                 usuarioEditado.setPassword(password);
-                usuarioEditado.setAdministrador(false);
-                usuarioEditado.setAutor(true);
+                usuarioEditado.setAdministrador(isAdmin!=null);
+                usuarioEditado.setAutor(isAutor!=null);
 
                 ServiciosUsuarios.getInstancia().editar(usuarioEditado);
                 response.redirect("/listaUsuarios");

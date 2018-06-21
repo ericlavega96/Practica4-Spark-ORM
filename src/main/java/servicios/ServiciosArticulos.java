@@ -21,11 +21,7 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         return instancia;
     }
 
-    /**
-     *
-     * @param nombre
-     * @return
-     */
+
     public List<Articulo> findAllIndexado(int i){
         EntityManager em = getEntityManager();
         Query query = em.createQuery("select e from Articulo e order by e.FECHA DESC LIMIT 5 OFFSET :inicio");

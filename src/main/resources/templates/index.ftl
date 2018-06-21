@@ -120,12 +120,24 @@
 
           <!-- Pagination -->
           <ul class="pagination justify-content-center mb-4">
-            <li class="page-item">
-              <a class="page-link" href="#">&larr; Older</a>
-            </li>
-            <li class="page-item disabled">
-              <a class="page-link" href="#">Newer &rarr;</a>
-            </li>
+				<#if validP??>
+					<li class="page-item">
+					  <a class="page-link" href="/home?page=${prevPage}">&larr; Older</a>
+					</li>
+				<#else>
+					<li class="page-item disabled">
+					  <a class="page-link" href="#">&larr; Older</a>
+					</li>
+				</#if>
+				<#if validN??>
+					<li class="page-item">
+					  <a class="page-link" href="/home?page=${nextPage}">Newer &rarr;</a>
+					</li>
+				<#else>
+					<li class="page-item disabled">
+					  <a class="page-link" href="#">Newer &rarr;</a>
+					</li>
+				</#if>
           </ul>
 
         </div>
@@ -142,7 +154,7 @@
                             <ul class="list-unstyled mb-0">
                                 <#list tagsCol1 as t1>
                                     <li>
-                                        <a href="/busquetaPorTag?tag=${t1}">${t1}</a>
+                                        <a href="/busquedaPorTag?page=1&tag=${t1}">${t1}</a>
                                     </li>
                                 </#list>
                             </ul>
@@ -151,7 +163,7 @@
                             <ul class="list-unstyled mb-0">
                                 <#list tagsCol2 as t2>
                                     <li>
-                                        <a href="/busquetaPorTag?tag=${t2}">${t2}</a>
+                                        <a href="/busquedaPorTag?page=1&tag=${t2}">${t2}</a>
                                     </li>
                                 </#list>
                             </ul>

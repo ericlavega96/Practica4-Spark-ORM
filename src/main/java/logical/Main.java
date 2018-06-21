@@ -62,7 +62,9 @@ public class Main {
         get("/", (request, response) -> {
             Usuario logUser = request.session(true).attribute("usuario");
             Map<String, Object> attributes = new HashMap<>();
-            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findAllIndexado(1);
+            int pagina= 1;
+            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findByTag("Moda",1);
+            List<String> tags = getTags(ServiciosEtiquetas.getInstancia().findAll());
 
             if(logUser == null && request.cookie("dcfgvhb2hjrkb2j289yhuij") != null){
                 request.session(true);
@@ -71,15 +73,12 @@ public class Main {
                         ServiciosUsuarios.getInstancia().find(Desencryptamiento(request.cookie("dcfgvhb2hjrkb2j289yhuij"))));
                 response.redirect("/");
             }
-
-
-
-
             attributes.put("titulo", "Página de artículos A&E");
             attributes.put("logUser", logUser);
-            attributes.put("tagsCol1", tagsColumnas(2, 1, getAllTags(misArticulos)));
-            attributes.put("tagsCol2", tagsColumnas(2, 2, getAllTags(misArticulos)));
+            attributes.put("tagsCol1", tagsColumnas(2, 1, tags));
+            attributes.put("tagsCol2", tagsColumnas(2, 2, tags));
             attributes.put("articulos", misArticulos);
+            attributes.put("page", 1);
             return new ModelAndView(attributes, "index.ftl");
         }, freeMarkerEngine);
 
@@ -201,6 +200,8 @@ public class Main {
                 Set<Etiqueta> articuloEtiquetas = crearEtiquetas(etiquetas);
 
                 Articulo nuevoArticulo = new Articulo(titulo,cuerpo,autor,fecha,articuloComentarios,articuloEtiquetas);
+                System.out.println("Probando crear: " + nuevoArticulo.getTitulo());
+
                 ServiciosArticulos.getInstancia().crear(nuevoArticulo);
 
                 response.redirect("/");
@@ -241,18 +242,18 @@ public class Main {
         get("/leerArticuloCompleto/:id", (request, response) -> {
 
             String idArticuloActual = request.params("id");
-
             Map<String, Object> attributes = new HashMap<>();
+            Articulo miArticulo = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual));
+            List<String> tags = getTags(new ArrayList(miArticulo.getListaEtiquetas()));
             Usuario logUser = request.session(true).attribute("usuario");
             attributes.put("titulo", "Artículo");
             attributes.put("logUser", logUser);
-            attributes.put("articulo",ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual)));
+            attributes.put("articulo",miArticulo);
 
-            attributes.put("tagsCol1", tagsColumnas(2, 1,getTagsArticulo(ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual)))));
-            attributes.put("tagsCol2", tagsColumnas(2, 2, getTagsArticulo(ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual)))));
+            attributes.put("tagsCol1", tagsColumnas(2, 1,tags));
+            attributes.put("tagsCol2", tagsColumnas(2, 2, tags));
             return new ModelAndView(attributes, "verArticulo.ftl");
         }, freeMarkerEngine);
-
         get("/editarArticulo/:id", (request, response) -> {
 
             idArticuloActual = request.params("id");
@@ -327,17 +328,7 @@ public class Main {
         });
 
     }
-
-
-    /*public static boolean verificarUsuario(String nombreUsuario,String password){
-        boolean usuarioRegistrado = false;
-        for (Usuario usuario: misUsuarios){
-            if (usuario.getUsername().equals(nombreUsuario)  && usuario.getPassword().equals(password)){
-                    usuarioRegistrado = true;
-            }
-        }
-        return usuarioRegistrado;
-    }*/
+    
 
     public static List<String> tagsColumnas(int numColum,int c, List<String> tags){
         List<String> columnaTag = new ArrayList<>();
@@ -370,28 +361,10 @@ public class Main {
         return tags;
     }
 
-    public static List<String> getTagsArticulo(Articulo articulo){
-        List<String> tags = new ArrayList<>();
-
-            for(Etiqueta E : articulo.getListaEtiquetas())
-                if(!tags.contains(E.tagsTransform()))
-                    tags.add(E.tagsTransform());
-        return tags;
-    }
-
     public static Set<Etiqueta> crearEtiquetas(String[] etiquetas){
         Set<Etiqueta> etiquetasList = new HashSet<>();
-        Etiqueta tag;
-        System.out.println("Entro");
-        System.out.println("En la funcion " + etiquetas);
-        for (String etiqueta : etiquetas ){
-            tag = ServiciosEtiquetas.getInstancia().findEtiquetaByTag(etiqueta.trim());
-            System.out.println(tag);
-            if(tag != null)
-                etiquetasList.add(new Etiqueta(etiqueta.trim()));
-            else
-                etiquetasList.add(tag);
-        }
+        for (String etiqueta : etiquetas )
+            etiquetasList.add(new Etiqueta(etiqueta.trim()));
         return etiquetasList;
     }
 
@@ -410,6 +383,16 @@ public class Main {
 
         return plainText;
     }
+
+    public static List<String> getTags(List<Etiqueta> etiquetas){
+        List<String> tags = new ArrayList<>();
+
+        for(Etiqueta E : etiquetas)
+            if(!tags.contains(E.tagsTransform()))
+                tags.add(E.tagsTransform());
+        return tags;
+    }
+
 
 
 }

@@ -21,13 +21,7 @@ public class ServiciosEtiquetas  extends MetodosDB<Etiqueta>{
         return instancia;
     }
 
-    public Etiqueta findEtiquetaByTag(String tag){
-        EntityManager em = getEntityManager();
-        Query query = em.createQuery("select e from Etiqueta e where e.etiqueta = :tag");
-        query.setParameter("tag", tag);
-        Etiqueta resultado = (Etiqueta)query.getSingleResult();
-        return resultado;
-    }
+
 
 
 }

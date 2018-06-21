@@ -13,7 +13,6 @@ public class Etiqueta implements Serializable{
     @Column(name="ETIQUETA_ID")
     private long id;
     @NotNull
-    @Column(unique = true)
     private String etiqueta;
 
     public Etiqueta() {

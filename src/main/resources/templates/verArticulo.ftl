@@ -59,14 +59,12 @@
         .dislike-btn:focus .fa-thumbs-down{
             color: red;
         }
-		.likes-dislikes-container {
-			display:inline;
-		}
-		li{
-			display: inline-block;
-		}
-
-
+        .like-btn-on{
+            color: lawngreen;
+        }
+        .dislike-btn-on{
+            color: red;
+        }
     </style>
 
   </head>
@@ -150,21 +148,29 @@
 
           <hr>
             <div class="likes-dislikes-container">
-				<ul>
-					<li>
-						<a href="#" class="like-btn">
-							<i class="fa fa-thumbs-up"></i>
-						</a>
-						<span>Likes</span>
-					</li>
-					<li>
-						<a href="#" class="dislike-btn">
-							<p></p>
-							<i class="fa fa-thumbs-down"></i>
-						</a>
-						<span>Dislikes</span>
-					</li>
-				</ul>
+                <#if like??>
+                    <a href="/procesarLike" class="like-btn-on" >
+                        <i class="fa fa-thumbs-up"></i>
+                    </a>
+                <#else>
+                    <a href="/procesarLike" class="like-btn" >
+                        <i class="fa fa-thumbs-up"></i>
+                    </a>
+                </#if>
+                <p>${articulo.likesCount()}</p>
+                <#if >
+                    <a href="/procesarDislike" class="dislike-btn-on">
+                        <p></p>
+                        <i class="fa fa-thumbs-down"></i>
+                    </a>
+                <#else>
+                    <a href="/procesarDislike" class="dislike-btn">
+                        <p></p>
+                        <i class="fa fa-thumbs-down"></i>
+                    </a>
+                </#if>
+
+                <p>${articulo.dislikesCount()}</p>
             </div>
 
           <!-- Comments Form -->

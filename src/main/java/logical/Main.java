@@ -260,7 +260,7 @@ public class Main {
 
         get("/leerArticuloCompleto/:id", (request, response) -> {
 
-            String idArticuloActual = request.params("id");
+            idArticuloActual = request.params("id");
             Map<String, Object> attributes = new HashMap<>();
             Articulo miArticulo = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual));
             List<String> tags = getTags(new ArrayList(miArticulo.getListaEtiquetas()));
@@ -268,11 +268,16 @@ public class Main {
             attributes.put("titulo", "Artículo");
             attributes.put("logUser", logUser);
             attributes.put("articulo",miArticulo);
+            if (logUser.likeArticulo(miArticulo))
+                attributes.put("like","true");
+            else
+                attributes.put("like",null);
 
             attributes.put("tagsCol1", tagsColumnas(2, 1,tags));
             attributes.put("tagsCol2", tagsColumnas(2, 2, tags));
             return new ModelAndView(attributes, "verArticulo.ftl");
         }, freeMarkerEngine);
+
         get("/editarArticulo/:id", (request, response) -> {
 
             idArticuloActual = request.params("id");
@@ -377,9 +382,48 @@ public class Main {
             return new ModelAndView(attributes, "ArticulosTags.ftl");
         }, freeMarkerEngine);
 
+
+        get("/procesarLike", (request, response) -> {
+            //try {
+
+                Usuario usuario = request.session(true).attribute("usuario");
+                Articulo articulo = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual));
+
+                LikesArticulo likesArticuloNuevo = new LikesArticulo();
+                likesArticuloNuevo.setArticulo(articulo);
+                likesArticuloNuevo.setUsuario(usuario);
+                likesArticuloNuevo.setLike(true);
+
+                ServiciosLikesArticulos.getInstancia().crear(likesArticuloNuevo);
+
+                response.redirect("/leerArticuloCompleto/" + idArticuloActual);
+
+            //} catch (Exception e) {
+            //    System.out.println("Error al indicar like en el artículo actual: " + e.toString());
+            //}
+            return "";
+        });
+
+        get("/procesarDislike", (request, response) -> {
+            try {
+                Usuario usuario = request.session(true).attribute("usuario");
+                Articulo articulo = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual));
+
+                LikesArticulo likesArticuloNuevo = new LikesArticulo();
+                likesArticuloNuevo.setArticulo(articulo);
+                likesArticuloNuevo.setUsuario(usuario);
+                likesArticuloNuevo.setLike(false);
+
+                ServiciosLikesArticulos.getInstancia().crear(likesArticuloNuevo);
+
+                response.redirect("/leerArticuloCompleto/" + idArticuloActual);
+
+            } catch (Exception e) {
+                System.out.println("Error al indicar like en el artículo actual: " + e.toString());
+            }
+            return "";
+        });
     }
-
-
 
 
     public static List<String> tagsColumnas(int numColum,int c, List<String> tags){
@@ -444,7 +488,5 @@ public class Main {
                 tags.add(E.tagsTransform());
         return tags;
     }
-
-
 
 }

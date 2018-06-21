@@ -43,14 +43,7 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         return lista;
     }
 
-    public int countByTag(String tag){
-        EntityManager em = getEntityManager();
-        Query query = em.createQuery("select a from Articulo a JOIN a.listaEtiquetas e WHERE e.etiqueta = :tag order by a.fecha DESC");
-        query.setParameter("tag", tag);
-        return query.getResultList().size();
-    }
-
-    public long getLikesCount(long articulo){
+    public long getLikesCount(Articulo articulo){
         EntityManager em = getEntityManager();
         Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.isLike = true");
         query.setParameter("articulo", articulo);
@@ -58,7 +51,7 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         return resultado;
     }
 
-    public long getDislikesCount(long articulo){
+    public long getDislikesCount(Articulo articulo){
         EntityManager em = getEntityManager();
         Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.isLike = false");
         query.setParameter("articulo", articulo);
@@ -66,10 +59,10 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         return resultado;
     }
 
-    public boolean isLiked(String user, Articulo articulo){
+    public boolean isLiked(Usuario user, Articulo articulo){
         EntityManager em = getEntityManager();
         Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.usuasrio = :user AND l.isLike = true");
-        query.setParameter("articulo", articulo.getId());
+        query.setParameter("articulo", articulo);
         query.setParameter("user", user);
         return query.getResultList().size() < 0;
     }
@@ -80,6 +73,13 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         query.setParameter("articulo", articulo.getId());
         query.setParameter("user", user);
         return query.getResultList().size() < 0;
+    }
+
+    public int countByTag(String tag){
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("select a from Articulo a JOIN a.listaEtiquetas e WHERE e.etiqueta = :tag order by a.fecha DESC");
+        query.setParameter("tag", tag);
+        return query.getResultList().size();
     }
 
 

@@ -61,7 +61,7 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
 
     public boolean isLiked(Usuario user, Articulo articulo){
         EntityManager em = getEntityManager();
-        Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.usuasrio = :user AND l.isLike = true");
+        Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.usuario = :user AND l.isLike = true");
         query.setParameter("articulo", articulo);
         query.setParameter("user", user);
         return query.getResultList().size() < 0;

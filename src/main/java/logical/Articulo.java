@@ -20,6 +20,7 @@ public class Articulo implements Serializable {
     @Column(unique = true)
     private String titulo;
     @NotNull
+    @Lob
     @Column(unique = true)
     private String cuerpo;
     @NotNull

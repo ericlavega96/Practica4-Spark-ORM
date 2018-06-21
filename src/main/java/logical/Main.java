@@ -269,15 +269,15 @@ public class Main {
             attributes.put("logUser", logUser);
             attributes.put("articulo",miArticulo);
             if (logUser.likeArticulo(miArticulo)) {
-                System.out.println(logUser.likeArticulo(miArticulo));
+                System.out.println("Like encontrado: " + logUser.likeArticulo(miArticulo));
                 attributes.put("like", "true");
             }
             else {
-                System.out.println("Like no encontrado...");
+                System.out.println("Disike no encontrado...");
                 attributes.put("like", null);
             }
             if (logUser.dislikeArticulo(miArticulo)) {
-                System.out.println(logUser.likeArticulo(miArticulo));
+                System.out.println("Like encontrado: " + logUser.likeArticulo(miArticulo));
                 attributes.put("dislike", "true");
             }
             else

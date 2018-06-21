@@ -65,7 +65,8 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.usuario = :user AND l.isLike = true");
         query.setParameter("articulo", articulo);
         query.setParameter("user", user);
-        return query.getResultList()!=null;
+        System.out.println(query.getFirstResult());
+        return query.getResultList().size()>0;
     }
 
     public boolean isDisliked(Usuario user, Articulo articulo){
@@ -73,7 +74,7 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.usuario = :user AND l.isLike = false");
         query.setParameter("articulo", articulo);
         query.setParameter("user", user);
-        return query.getResultList()!=null;
+        return query.getResultList().size()>0;
     }
 
     public int countByTag(String tag){

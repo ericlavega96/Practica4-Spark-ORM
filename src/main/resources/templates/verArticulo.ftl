@@ -65,6 +65,12 @@
         .dislike-btn-on{
             color: red;
         }
+		.likes-dislikes-container {
+			display:inline;
+		}
+		li{
+			display: inline-block;
+		}
     </style>
 
   </head>
@@ -148,29 +154,34 @@
 
           <hr>
             <div class="likes-dislikes-container">
-                <#if like??>
-                    <a href="/eliminarLike" class="like-btn" >
-                        <i class="fa fa-thumbs-up"></i>
-                    </a>
-                <#else>
-				<a href="/procesarLike" class="like-btn-on" >
-                        <i class="fa fa-thumbs-up"></i>
-                    </a>
-                </#if>
-                <p>${articulo.likesCount()}</p>
-                <#if dislike??>
-					<a href="/eliminarLike" class="dislike-btn">
-                        <p></p>
-                        <i class="fa fa-thumbs-down"></i>
-                    </a>
-                <#else>
-                    <a href="/procesarDislike" class="dislike-btn-on">
-                        <p></p>
-                        <i class="fa fa-thumbs-down"></i>
-                    </a>
-                </#if>
-
-                <p>${articulo.dislikesCount()}</p>
+				<ul>
+					<li>
+						<#if like??>
+							<a href="/eliminarLike" class="like-btn-on" >
+								<i class="fa fa-thumbs-up"></i>
+							</a>
+						<#else>
+							<a href="/procesarLike" class="like-btn" >
+								<i class="fa fa-thumbs-up"></i>
+							</a>
+						</#if>
+						<p>${articulo.likesCount()}</p>
+					</li>	
+					<li>
+						<#if dislike??>
+							<a href="/eliminarLike" class="dislike-btn-on">
+								<p></p>
+								<i class="fa fa-thumbs-down"></i>
+							</a>
+						<#else>
+							<a href="/procesarDislike" class="dislike-btn">
+								<p></p>
+								<i class="fa fa-thumbs-down"></i>
+							</a>
+						</#if>
+						<p>${articulo.dislikesCount()}</p>
+					</li>
+				</ul>
             </div>
 
           <!-- Comments Form -->
@@ -212,29 +223,16 @@
         <!-- Sidebar Widgets Column -->
         <div class="col-md-4">
 
-          <!-- Search Widget -->
-          <div class="card my-4">
-            <h5 class="card-header">Búsqueda de Artículos</h5>
-            <div class="card-body">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Buscar artículo...">
-                <span class="input-group-btn">
-                  <button class="btn btn-secondary" type="button">Buscar</button>
-                </span>
-              </div>
-            </div>
-          </div>
-
           <!-- Categories Widget -->
             <div class="card my-4">
-                <h5 class="card-header">Tags</h5>
+                <h5 class="card-header">Tags del Artículo</h5>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-6">
                             <ul class="list-unstyled mb-0">
                                 <#list tagsCol1 as t1>
                                     <li>
-                                        <a href="#">${t1}</a>
+                                        <a href="/busquedaPorTag?page=1&tag=${t1}">${t1}</a>
                                     </li>
                                 </#list>
                             </ul>
@@ -243,7 +241,7 @@
                             <ul class="list-unstyled mb-0">
                                 <#list tagsCol2 as t2>
                                     <li>
-                                        <a href="#">${t2}</a>
+                                        <a href="/busquedaPorTag?page=1&tag=${t2}">${t2}</a>
                                     </li>
                                 </#list>
                             </ul>
@@ -251,14 +249,6 @@
                     </div>
                 </div>
             </div>
-
-          <!-- Side Widget -->
-          <div class="card my-4">
-            <h5 class="card-header">Side Widget</h5>
-            <div class="card-body">
-              You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
-            </div>
-          </div>
 
         </div>
 

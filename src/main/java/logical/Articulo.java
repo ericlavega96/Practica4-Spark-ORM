@@ -1,6 +1,7 @@
 package logical;
 
 import com.sun.istack.internal.NotNull;
+import servicios.ServiciosArticulos;
 
 import javax.persistence.*;
 import javax.persistence.Column;
@@ -164,4 +165,8 @@ public class Articulo implements Serializable {
         }
         return nombreMes;
     }
+
+    public long likesCount(){return ServiciosArticulos.getInstancia().getLikesCount(id);}
+
+    public long dislikesCount(){return ServiciosArticulos.getInstancia().getDislikesCount(id);}
 }

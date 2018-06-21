@@ -142,7 +142,7 @@
                             <ul class="list-unstyled mb-0">
                                 <#list tagsCol1 as t1>
                                     <li>
-                                        <a href="#">${t1}</a>
+                                        <a href="/busquetaPorTag?tag=${t1}">${t1}</a>
                                     </li>
                                 </#list>
                             </ul>
@@ -151,7 +151,7 @@
                             <ul class="list-unstyled mb-0">
                                 <#list tagsCol2 as t2>
                                     <li>
-                                        <a href="#">${t2}</a>
+                                        <a href="/busquetaPorTag?tag=${t2}">${t2}</a>
                                     </li>
                                 </#list>
                             </ul>

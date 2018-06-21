@@ -327,8 +327,29 @@ public class Main {
             return "";
         });
 
+        get("/busquetaPorTag", (request, response) -> {
+            Usuario logUser = request.session(true).attribute("usuario");
+            Map<String, Object> attributes = new HashMap<>();
+            int pagina= 1;
+            String tag = request.queryParams("tag");;
+
+            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findByTag(tag,pagina);
+            List<String> tags = getTags(ServiciosEtiquetas.getInstancia().findAll());
+
+            attributes.put("titulo", "Página de artículos A&E");
+            attributes.put("logUser", logUser);
+            attributes.put("tagFind", tag);
+            attributes.put("tagsCol1", tagsColumnas(2, 1, tags));
+            attributes.put("tagsCol2", tagsColumnas(2, 2, tags));
+            attributes.put("articulos", misArticulos);
+            attributes.put("page", 1);
+            return new ModelAndView(attributes, "ArticulosTags.ftl");
+        }, freeMarkerEngine);
+
     }
-    
+
+
+
 
     public static List<String> tagsColumnas(int numColum,int c, List<String> tags){
         List<String> columnaTag = new ArrayList<>();

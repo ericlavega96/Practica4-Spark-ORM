@@ -13,6 +13,9 @@
     <!-- Bootstrap core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
     <!-- Custom styles for this template -->
     <link href="/css/blog-post.css" rel="stylesheet">
     <style>
@@ -32,6 +35,29 @@
             opacity: 0.9;
             background-color: darkred;
             color:white;
+        }
+        .like-btn,
+        .dislike-btn {
+            font-size: 50px;
+            user-select: none;
+            display: inline;
+            color: gainsboro;
+        }
+
+        a:hover{
+            text-decoration: none;
+        }
+        .like-btn:hover .fa-thumbs-up{
+            color: lawngreen;
+        }
+        .dislike-btn:hover .fa-thumbs-down{
+            color: red;
+        }
+        .like-btn:focus .fa-thumbs-up{
+            color: lawngreen;
+        }
+        .dislike-btn:focus .fa-thumbs-down{
+            color: red;
         }
     </style>
 
@@ -100,6 +126,7 @@
           </p>
 
           <hr>
+        <hr>
 
           <!-- Date/Time -->
           <p>${articulo.fechaText()}</p>
@@ -110,12 +137,21 @@
           <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
 
           <hr>
-
           <!-- Post Content -->
           <p>${articulo.cuerpo}</p>
 
-
           <hr>
+            <div class="likes-dislikes-container">
+                <a href="#" class="like-btn">
+                    <i class="fa fa-thumbs-up"></i>
+                </a>
+                <p>Likes</p>
+                <a href="#" class="dislike-btn">
+                    <p></p>
+                    <i class="fa fa-thumbs-down"></i>
+                </a>
+                <p>Dislikes</p>
+            </div>
 
           <!-- Comments Form -->
           <#if logUser??>

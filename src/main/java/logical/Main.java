@@ -63,7 +63,7 @@ public class Main {
             Usuario logUser = request.session(true).attribute("usuario");
             Map<String, Object> attributes = new HashMap<>();
             int pagina= 1;
-            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findByTag("Moda",1);
+            List<Articulo> misArticulos = ServiciosArticulos.getInstancia().findAllIndexado(pagina);
             List<String> tags = getTags(ServiciosEtiquetas.getInstancia().findAll());
 
             if(logUser == null && request.cookie("dcfgvhb2hjrkb2j289yhuij") != null){

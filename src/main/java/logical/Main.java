@@ -46,6 +46,7 @@ public class Main {
         //ServiciosBootStrap.detenetBD();
         ServiciosUsuarios.getInstancia().crearAdmin();
 
+
         get("/iniciarSesion", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
 
@@ -303,13 +304,12 @@ public class Main {
             return new ModelAndView(attributes, "editarArticulo.ftl");
         }, freeMarkerEngine);
 
-        get("/eliminarComentario", (request, response) -> {
+        get("/eliminarComentario/:idArticulo/:idComentario", (request, response) -> {
 
-            String idArticuloActual = request.queryParams("idArticulo");
-            String idComentarioAEliminar = request.queryParams("idComentario");
-            System.out.println("Id Articulo "+ idArticuloActual + " idComentario " + idComentarioAEliminar);
+            String idArticuloActual = request.params("idArticulo");
+            String idComentarioAEliminar = request.params("idComentario");
 
-            ServiciosComentarios.getInstancia().eliminar(Long.parseLong(idComentarioAEliminar));
+            ServiciosComentarios.getInstancia().eliminarComentario(Long.parseLong(idComentarioAEliminar));
 
             response.redirect("/leerArticuloCompleto/" + idArticuloActual);
             return "";

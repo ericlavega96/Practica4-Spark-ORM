@@ -38,9 +38,6 @@
         }
         .like-btn,
         .dislike-btn {
-            font-size: 50px;
-            user-select: none;
-            display: inline;
             color: gainsboro;
         }
 
@@ -67,6 +64,10 @@
         }
 		.likes-dislikes-container {
 			display:inline;
+            font-size: 50px;
+            user-select: none;
+            display: inline;
+            margin:auto;
 		}
 		li{
 			display: inline-block;
@@ -211,7 +212,7 @@
             <div>
                 <#if logUser??>
                     <#if logUser.administrador || logUser.autor>
-                        <a href="/eliminarComentario?idArticulo=${articulo.id}&idComentario=${comentario.id}" class="deleteBtn">Eliminar Comentario</a>
+                        <a href="/eliminarComentario/${articulo.id}/${comentario.id}" class="deleteBtn">Eliminar Comentario</a>
                         <br>
                         <br>
                     </#if>

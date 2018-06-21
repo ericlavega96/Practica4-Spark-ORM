@@ -1,6 +1,7 @@
 package logical;
 
 import com.sun.istack.internal.NotNull;
+import servicios.ServiciosArticulos;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -92,5 +93,9 @@ public class Usuario implements Serializable{
 
     public void setLikeArticulo(Set<LikesArticulo> likeArticulo) {
         this.likeArticulo = likeArticulo;
+    }
+
+    public boolean likeArticulo(Articulo articulo){
+        return ServiciosArticulos.getInstancia().isLiked(this.username, articulo);
     }
 }

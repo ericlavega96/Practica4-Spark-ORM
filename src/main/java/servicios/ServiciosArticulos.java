@@ -2,6 +2,7 @@ package servicios;
 
 import logical.Articulo;
 import logical.Etiqueta;
+import logical.Usuario;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -40,6 +41,38 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         query.setMaxResults(5);
         List<Articulo> lista = query.getResultList();
         return lista;
+    }
+
+    public long getLikesCount(long articulo){
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.isLike = true");
+        query.setParameter("articulo", articulo);
+        long resultado = query.getResultList().size();
+        return resultado;
+    }
+
+    public long getDislikesCount(long articulo){
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.isLike = false");
+        query.setParameter("articulo", articulo);
+        long resultado = query.getResultList().size();
+        return resultado;
+    }
+
+    public boolean isLiked(String user, Articulo articulo){
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.usuasrio = :user AND l.isLike = true");
+        query.setParameter("articulo", articulo.getId());
+        query.setParameter("user", user);
+        return query.getResultList().size() < 0;
+    }
+
+    public boolean isDisliked(String user, Articulo articulo){
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.usuasrio = :user AND l.isLike = false");
+        query.setParameter("articulo", articulo.getId());
+        query.setParameter("user", user);
+        return query.getResultList().size() < 0;
     }
 
 

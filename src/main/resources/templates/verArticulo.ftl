@@ -149,22 +149,22 @@
           <hr>
             <div class="likes-dislikes-container">
                 <#if like??>
-                    <a href="/procesarLike" class="like-btn-on" >
+                    <a href="/eliminarLike" class="like-btn" >
                         <i class="fa fa-thumbs-up"></i>
                     </a>
                 <#else>
-                    <a href="/procesarLike" class="like-btn" >
+				<a href="/procesarLike" class="like-btn-on" >
                         <i class="fa fa-thumbs-up"></i>
                     </a>
                 </#if>
                 <p>${articulo.likesCount()}</p>
-                <#if >
-                    <a href="/procesarDislike" class="dislike-btn-on">
+                <#if dislike??>
+					<a href="/eliminarLike" class="dislike-btn">
                         <p></p>
                         <i class="fa fa-thumbs-down"></i>
                     </a>
                 <#else>
-                    <a href="/procesarDislike" class="dislike-btn">
+                    <a href="/procesarDislike" class="dislike-btn-on">
                         <p></p>
                         <i class="fa fa-thumbs-down"></i>
                     </a>

@@ -27,7 +27,7 @@ public class FiltrosYCookies {
             // ... check if authenticated
             Usuario logUser = request.session(true).attribute("usuario");
             if (logUser == null || !logUser.isAdministrador()) {
-                halt(401, "Error: Necesitas permiso para acceder a este lugar!");
+                response.redirect("/");
             }
         });
 
@@ -35,7 +35,7 @@ public class FiltrosYCookies {
             // ... check if authenticated
             Usuario logUser = request.session(true).attribute("usuario");
             if (logUser == null || !logUser.isAdministrador()) {
-                halt(401, "Error: Necesitas permiso para acceder a este lugar!");
+                response.redirect("/");
             }
         });
 
@@ -43,7 +43,7 @@ public class FiltrosYCookies {
             // ... check if authenticated
             Usuario logUser = request.session(true).attribute("usuario");
             if (logUser == null || !logUser.isAdministrador()) {
-                halt(401, "Error: Necesitas permiso para acceder a este lugar!");
+                response.redirect("/");
             }
         });
 
@@ -51,7 +51,7 @@ public class FiltrosYCookies {
             // ... check if authenticated
             Usuario logUser = request.session(true).attribute("usuario");
             if (logUser == null || !logUser.isAdministrador()) {
-                halt(401, "Error: Necesitas permiso para acceder a este lugar!");
+                response.redirect("/");
             }
         });
 
@@ -59,7 +59,7 @@ public class FiltrosYCookies {
             // ... check if authenticated
             Usuario logUser = request.session(true).attribute("usuario");
             if (logUser == null || !logUser.isAdministrador()) {
-                halt(401, "Error: Necesitas permiso para acceder a este lugar!");
+                response.redirect("/");
             }
         });
 
@@ -67,7 +67,15 @@ public class FiltrosYCookies {
             // ... check if authenticated
             Usuario logUser = request.session(true).attribute("usuario");
             if (logUser == null || (!logUser.isAdministrador() && !logUser.isAutor())) {
-                halt(401, "Error: Necesitas permiso para acceder a este lugar!");
+                response.redirect("/");
+            }
+        });
+
+        before("/leerArticuloCompleto/*", (request, response) -> {
+            // ... check if authenticated
+            Usuario logUser = request.session(true).attribute("usuario");
+            if (logUser == null || (!logUser.isAdministrador() && !logUser.isAutor())) {
+                response.redirect("/");
             }
         });
 

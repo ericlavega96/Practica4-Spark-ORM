@@ -2,6 +2,7 @@ package servicios;
 
 import logical.Articulo;
 import logical.Etiqueta;
+import logical.LikesArticulo;
 import logical.Usuario;
 
 import javax.persistence.EntityManager;
@@ -64,15 +65,15 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.usuario = :user AND l.isLike = true");
         query.setParameter("articulo", articulo);
         query.setParameter("user", user);
-        return query.getResultList().size() < 0;
+        return query.getResultList()!=null;
     }
 
-    public boolean isDisliked(String user, Articulo articulo){
+    public boolean isDisliked(Usuario user, Articulo articulo){
         EntityManager em = getEntityManager();
-        Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.usuasrio = :user AND l.isLike = false");
-        query.setParameter("articulo", articulo.getId());
+        Query query = em.createQuery("select l from LikesArticulo l WHERE l.articulo = :articulo AND l.usuario = :user AND l.isLike = false");
+        query.setParameter("articulo", articulo);
         query.setParameter("user", user);
-        return query.getResultList().size() < 0;
+        return query.getResultList()!=null;
     }
 
     public int countByTag(String tag){
@@ -81,6 +82,8 @@ public class ServiciosArticulos extends MetodosDB<Articulo>{
         query.setParameter("tag", tag);
         return query.getResultList().size();
     }
+
+
 
 
 }

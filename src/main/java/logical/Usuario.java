@@ -98,4 +98,8 @@ public class Usuario implements Serializable{
     public boolean likeArticulo(Articulo articulo){
         return ServiciosArticulos.getInstancia().isLiked(this, articulo);
     }
+
+    public boolean dislikeArticulo(Articulo articulo){
+        return ServiciosArticulos.getInstancia().isDisliked(this, articulo);
+    }
 }

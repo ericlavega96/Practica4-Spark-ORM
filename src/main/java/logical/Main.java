@@ -142,7 +142,7 @@ public class Main {
                 String isAdmin = request.queryParams("rbAdmin");
                 String isAutor = request.queryParams("rbAutor");
 
-                Usuario nuevoUsuario = new Usuario(nombre, username, password, isAdmin!=null, isAutor!=null);
+                Usuario nuevoUsuario = new Usuario(username, nombre, password, isAdmin!=null, isAutor!=null);
                 ServiciosUsuarios.getInstancia().crear(nuevoUsuario);
 
                 response.redirect("/listaUsuarios");
@@ -268,10 +268,20 @@ public class Main {
             attributes.put("titulo", "Artículo");
             attributes.put("logUser", logUser);
             attributes.put("articulo",miArticulo);
-            if (logUser.likeArticulo(miArticulo))
-                attributes.put("like","true");
+            if (logUser.likeArticulo(miArticulo)) {
+                System.out.println(logUser.likeArticulo(miArticulo));
+                attributes.put("like", "true");
+            }
+            else {
+                System.out.println("Like no encontrado...");
+                attributes.put("like", null);
+            }
+            if (logUser.dislikeArticulo(miArticulo)) {
+                System.out.println(logUser.likeArticulo(miArticulo));
+                attributes.put("dislike", "true");
+            }
             else
-                attributes.put("like",null);
+                attributes.put("dislike",null);
 
             attributes.put("tagsCol1", tagsColumnas(2, 1,tags));
             attributes.put("tagsCol2", tagsColumnas(2, 2, tags));
@@ -384,37 +394,46 @@ public class Main {
 
 
         get("/procesarLike", (request, response) -> {
-            //try {
+            try {
 
                 Usuario usuario = request.session(true).attribute("usuario");
                 Articulo articulo = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual));
 
-                LikesArticulo likesArticuloNuevo = new LikesArticulo();
-                likesArticuloNuevo.setArticulo(articulo);
-                likesArticuloNuevo.setUsuario(usuario);
-                likesArticuloNuevo.setLike(true);
-
-                ServiciosLikesArticulos.getInstancia().crear(likesArticuloNuevo);
+                ServiciosLikes.getInstancia().deleteLikes(articulo,usuario);
+                ServiciosLikesArticulos.getInstancia().crear(new LikesArticulo(articulo,usuario,true));
 
                 response.redirect("/leerArticuloCompleto/" + idArticuloActual);
 
-            //} catch (Exception e) {
-            //    System.out.println("Error al indicar like en el artículo actual: " + e.toString());
-            //}
+            } catch (Exception e) {
+                System.out.println("Error al indicar like en el artículo actual: " + e.toString());
+            }
             return "";
         });
 
         get("/procesarDislike", (request, response) -> {
             try {
+
                 Usuario usuario = request.session(true).attribute("usuario");
                 Articulo articulo = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual));
 
-                LikesArticulo likesArticuloNuevo = new LikesArticulo();
-                likesArticuloNuevo.setArticulo(articulo);
-                likesArticuloNuevo.setUsuario(usuario);
-                likesArticuloNuevo.setLike(false);
+                ServiciosLikes.getInstancia().deleteLikes(articulo,usuario);
+                ServiciosLikesArticulos.getInstancia().crear(new LikesArticulo(articulo,usuario,false));
 
-                ServiciosLikesArticulos.getInstancia().crear(likesArticuloNuevo);
+                response.redirect("/leerArticuloCompleto/" + idArticuloActual);
+
+            } catch (Exception e) {
+                System.out.println("Error al indicar like en el artículo actual: " + e.toString());
+            }
+            return "";
+        });
+
+        get("/eliminarLike", (request, response) -> {
+            try {
+
+                Usuario usuario = request.session(true).attribute("usuario");
+                Articulo articulo = ServiciosArticulos.getInstancia().find(Long.parseLong(idArticuloActual));
+
+                ServiciosLikes.getInstancia().deleteLikes(articulo,usuario);
 
                 response.redirect("/leerArticuloCompleto/" + idArticuloActual);
 
@@ -445,16 +464,6 @@ public class Main {
         }
 
         return columnaTag;
-    }
-
-    public static List<String> getAllTags(List<Articulo> articulos){
-        List<String> tags = new ArrayList<>();
-
-        for(Articulo A : articulos)
-            for(Etiqueta E : A.getListaEtiquetas())
-                if(!tags.contains(E.tagsTransform()))
-                    tags.add(E.tagsTransform());
-        return tags;
     }
 
     public static Set<Etiqueta> crearEtiquetas(String[] etiquetas){

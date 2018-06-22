@@ -309,7 +309,7 @@ public class Main {
             String idArticuloActual = request.params("idArticulo");
             String idComentarioAEliminar = request.params("idComentario");
 
-            ServiciosComentarios.getInstancia().eliminarComentario(Long.parseLong(idComentarioAEliminar));
+            ServiciosComentarios.getInstancia().eliminar(Long.parseLong(idComentarioAEliminar));
 
             response.redirect("/leerArticuloCompleto/" + idArticuloActual);
             return "";

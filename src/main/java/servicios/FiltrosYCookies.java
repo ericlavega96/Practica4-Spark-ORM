@@ -71,14 +71,6 @@ public class FiltrosYCookies {
             }
         });
 
-        before("/leerArticuloCompleto/*", (request, response) -> {
-            // ... check if authenticated
-            Usuario logUser = request.session(true).attribute("usuario");
-            if (logUser == null || (!logUser.isAdministrador() && !logUser.isAutor())) {
-                response.redirect("/");
-            }
-        });
-
         /*get("/crearCookie/:nombreCookie/:valor", (request, response)->{
             //creando cookie en para un minuto
             response.cookie("/", request.params("nombreCookie"), request.params("valor"), 60, true); //incluyendo el path del cookie.
